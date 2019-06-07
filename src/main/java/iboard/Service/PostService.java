@@ -25,9 +25,9 @@ public class PostService {
         JsonObject jsonObject = gson.fromJson(jsonPost, JsonObject.class);
         String msg = jsonObject.get("msg").getAsString();
         ThreadModel thread = gson.fromJson(jsonObject.get("thread_id"),ThreadModel.class);
-        post.setMsg(msg);
         //if(postRep.existsByTag(msg))
-          //  throw new EntityExistsException("This Board tag is exist " + thread.getThreadTag());
+        //   throw new EntityExistsException("This Board tag is exist " + thread.getThreadTag());
+        post.setMsg(msg);
 
         if(jsonObject.get("ref") != null)
             post.setRef(jsonObject.get("ref").getAsString());
@@ -36,6 +36,9 @@ public class PostService {
         return gson.toJson(post);
     }
 
+    public String getAllByThread(Long id){
+        return gson.toJson(postRep.findAllByThread(id));
+    }
     public String getAll(){
         return gson.toJson(postRep.findAll());
     }

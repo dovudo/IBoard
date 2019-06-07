@@ -10,6 +10,8 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<PostModel,Long> {
 
     List<PostModel> findAll();
-    PostModel findTopById(Long id);
-    PostModel findByThread_id(Long id);
+    //PostModel findTopById(Long id);
+    PostModel findAllByThread(Long id);
+    //boolean existsByMsg(String Msg);
+    //PostModel findByThread_id(Long id);
 }
