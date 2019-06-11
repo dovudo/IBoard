@@ -4,7 +4,6 @@ import io.micrometer.core.lang.Nullable;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -14,10 +13,12 @@ public class PostModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long Pid;
-    @OneToOne
-    @JoinColumn(name = "Tid")
+    Long id;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "thread_id")
     private ThreadModel thread;
+
     @Column(name = "msg")
     @NotNull
     private String msg;
@@ -28,6 +29,9 @@ public class PostModel {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp = new Date();
+
+    public PostModel() {
+    }
 
 
     public ThreadModel getThread() {
@@ -47,19 +51,11 @@ public class PostModel {
     }
 
     public Long getId() {
-        return Pid;
+        return id;
     }
 
     public void setId(Long id) {
-        this.Pid = id;
-    }
-
-    public ThreadModel getThread_id() {
-        return thread;
-    }
-
-    public void setThread_id(ThreadModel thread) {
-        this.thread = thread;
+        this.id = id;
     }
 
     public String getMsg() {
