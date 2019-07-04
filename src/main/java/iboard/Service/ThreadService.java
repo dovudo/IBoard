@@ -3,12 +3,12 @@ package iboard.Service;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import iboard.EntityPattern.ThreadModel;
+import iboard.JPA.ThreadRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import iboard.JPA.ThreadRepository;
 
 import javax.persistence.EntityExistsException;
 import java.util.NoSuchElementException;
@@ -31,14 +31,11 @@ public class ThreadService {
         ThreadModel thread = new ThreadModel();
         String ThreadTag = jsonObject.get("tag").getAsString();
         thread.setThreadTag(ThreadTag);
-
-        if(threadRep.existsByTag(ThreadTag))
-            throw new EntityExistsException("This Board tag is exist " + thread.getThreadTag());
         if(jsonObject.get("subject") != null)
             thread.setThreadSubject(jsonObject.get("subject").getAsString());
         if(jsonObject.get("description") != null)
             thread.setThreadDescription(jsonObject.get("description").getAsString());
-        logs.info("Created new board " + ThreadTag);
+        logs.info("Created new thread " + ThreadTag);
         threadRep.save(thread);
         return gson.toJson(thread);
     }
@@ -54,7 +51,7 @@ public class ThreadService {
     public HttpStatus removeThread(Long id){
         try {
             Optional<ThreadModel> thread = threadRep.findById(id);
-            threadRep.delete(thread.get());
+            threadRep.delete(thread.isPresent() ? thread.get() : null);
             return HttpStatus.OK;
         }
         catch (NoSuchElementException e){

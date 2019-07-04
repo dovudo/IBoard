@@ -18,18 +18,21 @@ public class PostApi {
         return json.toString();
     }
 
-    @GetMapping("post/getAll")
-    public String getAll(){
+    @GetMapping("posts")
+    public String getAllPosts(){
         return (service.getAll());
+    }
+
+    /*
+    Getting posts by thread id
+    */
+    @GetMapping("post/{id}")
+    public String getAllByThread(@PathVariable Long id){
+        return service.getAllByThread(id);
     }
 
     @PostMapping("post")
     public String createPost(@RequestBody String json){
         return service.createPost(json);
-    }
-
-    @GetMapping("post/{id}")
-    public String getAllByThread(@PathVariable String id){
-       return service.getAllByThread(Long.valueOf(id));
     }
 }

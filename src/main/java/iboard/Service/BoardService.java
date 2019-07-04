@@ -14,14 +14,14 @@ import java.util.List;
 public class BoardService {
 
     private static final String filePath = "./boardsList.json";
-    private static Gson gson = new Gson();
-    List<BoardModel> boardList;
+    private final Gson gson = new Gson();
+    private List<BoardModel> boardList;
 
     public void setBoardList(List boardList) {
         this.boardList = boardList;
     }
 
-    public synchronized List getBoardList() {
+    private synchronized List getBoardList() {
         try (FileReader r = new FileReader(filePath)) {
             boardList = gson.fromJson(r, List.class);
             System.out.println(boardList.listIterator().next());
@@ -34,13 +34,17 @@ public class BoardService {
         return boardList;
     }
 
-    public synchronized void addToBoard(BoardModel model){
-        List list = getBoardList();
-        list.add(model);
-        saveBoardList(list);
+    public synchronized void addToBoard(BoardModel model) throws IllegalArgumentException{
+        if(model == null)
+            throw new IllegalArgumentException("Nullable param got while create new board");
+        else {
+            List list = getBoardList();
+            list.add(model);
+            saveBoardList(list);
+        }
     }
 
-    public synchronized void saveBoardList(List list){
+    private synchronized void saveBoardList(List list){
         try(FileWriter w = new FileWriter(filePath)){
             w.write(gson.toJson(list));
         } catch (IOException e) {
@@ -48,5 +52,7 @@ public class BoardService {
         }
     }
 
-
+    public String getAllBoards(){
+        return gson.toJson(getBoardList());
+    }
 }

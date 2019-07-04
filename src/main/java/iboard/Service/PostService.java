@@ -5,39 +5,42 @@ import com.google.gson.JsonObject;
 import iboard.EntityPattern.PostModel;
 import iboard.EntityPattern.ThreadModel;
 import iboard.JPA.PostRepository;
+import iboard.JPA.ThreadRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityExistsException;
 
 @Service
 public class PostService {
 
     @Autowired
     PostRepository postRep;
-    Gson gson = new Gson();
-    PostModel post = new PostModel();
-    Logger logs = LoggerFactory.getLogger("PostService");
+
+    @Autowired
+    ThreadRepository threadRep;
+
+    private Gson gson = new Gson();
+    private final Logger logs = LoggerFactory.getLogger("PostService");
 
     public String createPost(String jsonPost){
+        PostModel post = new PostModel();
         JsonObject jsonObject = gson.fromJson(jsonPost, JsonObject.class);
         String msg = jsonObject.get("msg").getAsString();
         ThreadModel thread = gson.fromJson(jsonObject.get("thread_id"),ThreadModel.class);
-        //if(postRep.existsByTag(msg))
-        //   throw new EntityExistsException("This Board tag is exist " + thread.getThreadTag());
+        post.setThread(thread);
         post.setMsg(msg);
 
         if(jsonObject.get("ref") != null)
             post.setRef(jsonObject.get("ref").getAsString());
-        logs.info("Created new thread " + post.getId());
+        logs.info("Created new post " + post.getId());
         postRep.save(post);
         return gson.toJson(post);
     }
 
     public String getAllByThread(Long id){
-        return gson.toJson(postRep.findAllByThread(id));
+       ThreadModel thread = threadRep.findFirstById(id);
+        return gson.toJson(postRep.findAllByThread(thread));
     }
     public String getAll(){
         return gson.toJson(postRep.findAll());

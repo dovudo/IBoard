@@ -22,4 +22,10 @@ public class ExceptionGrubber {
     public String EntityExists(EntityExistsException e){
         return gson.toJson(new StatusInterface(HttpStatus.CONFLICT,e.getMessage()));
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, code = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public String IllegalException(IllegalArgumentException e){
+        return gson.toJson(e.getMessage());
+    }
 }
