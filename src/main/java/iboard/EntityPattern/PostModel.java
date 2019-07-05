@@ -33,7 +33,6 @@ public class PostModel {
     public PostModel() {
     }
 
-
     public ThreadModel getThread() {
         return thread;
     }
